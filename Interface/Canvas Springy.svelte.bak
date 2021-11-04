@@ -1,0 +1,226 @@
+<script lang="ts">
+	// let canvas: HTMLDivElement;
+	import { sineIn } from 'svelte/easing'
+	import { spring } from 'svelte/motion'
+
+	const springX = spring(1, { stiffness: 0.1, damping: 0.5 })
+	const springY = spring(1, { stiffness: 0.1, damping: 0.5 })
+
+	const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
+	let borderOffset = 0
+	let marching = false
+	async function marchIn() {
+		marching = true
+		while (marching == true) {
+			await delay(10)
+			borderOffset += 0.1
+		}
+		for (let index = 40; index > 0; index--) {
+			const p = sineIn(index / 40)
+			await delay(10)
+			borderOffset += p / 10
+		}
+	}
+
+	let coords = [
+		{ x: 0, y: 0 },
+		{ x: 0, y: 0 },
+		{ x: 0, y: 0 },
+		{ x: 0, y: 0 },
+	]
+
+	let offset = {
+		x: -1,
+		y: -1,
+	}
+
+	let paths: SVGPathElement[] = []
+	let svg: SVGSVGElement
+	let i: number
+
+	function onMouseMove(event: MouseEvent) {
+		coords[i].x = event.offsetX * 1.3
+		coords[i].y = event.offsetY * 1.3
+
+		if (offset.x == -1) {
+			offset.x = event.offsetX
+			offset.y = event.offsetY
+		}
+
+		let d = paths[i].getAttribute('data-d')
+		if (i == 0 || i == 2) {
+			if (Math.abs(event.offsetX - offset.x) > 150) {
+				springBack()
+				return
+			}
+		} else {
+			if (Math.abs(event.offsetY - offset.y) > 150) {
+				springBack()
+				return
+			}
+		}
+
+		springX.set(coords[i].x)
+		springY.set(coords[i].y)
+	}
+
+	async function springBack() {
+		console.log('springing back')
+		svg.removeEventListener('mousemove', onMouseMove)
+		springX.set(0)
+		springY.set(0)
+		offset.x = -1
+		await delay(200)
+		i = null
+	}
+</script>
+
+<div id="container">
+	<div
+		id="canvas"
+		on:mouseenter={marchIn}
+		on:mouseleave={() => (marching = false)}
+	>
+		<div id="background">
+			<svg
+				width="100%"
+				height="100%"
+				viewBox="0 0 600 800"
+				preserveAspectRatio="xMidYMid meet"
+				xmlns="http://www.w3.org/2000/svg"
+				bind:this={svg}
+				on:mouseleave={springBack}
+			>
+				<path
+					fill="none"
+					stroke="#eee"
+					stroke-width="2.0"
+					stroke-dasharray="2, 4"
+					stroke-dashoffset={borderOffset}
+					stroke-linecap="square"
+					data-d="M0,0 Q0,400, 0,800"
+					d="M0,0 Q{i == 0 ? Math.floor($springX) : 0},{i == 0
+						? Math.floor($springY)
+						: 400}, 0,800"
+				/>
+				<path
+					fill="none"
+					stroke="#eee"
+					stroke-width="2.0"
+					stroke-dasharray="2, 4"
+					stroke-dashoffset={-borderOffset}
+					stroke-linecap="square"
+					data-d="M0,0 Q300,0, 600,0"
+					d="M0,0 Q{i == 1 ? Math.floor($springX) : 300},{i == 1
+						? Math.floor($springY)
+						: 0}, 600,0"
+				/>
+				<path
+					fill="none"
+					stroke="#eee"
+					stroke-width="2.0"
+					stroke-dasharray="2, 4"
+					stroke-dashoffset={-borderOffset}
+					stroke-linecap="square"
+					data-d="M600,0 Q600,400, 600,800"
+					d="M600,0 Q{i == 2 ? Math.floor($springX) : 600},{i == 2
+						? Math.floor($springY)
+						: 400}, 600,800"
+				/>
+				<path
+					fill="none"
+					stroke="#eee"
+					stroke-width="2.0"
+					stroke-dasharray="2, 4"
+					stroke-dashoffset={borderOffset}
+					stroke-linecap="square"
+					data-d="M0,800 Q300,800, 600,800"
+					d="M0,800 Q{i == 3 ? Math.floor($springX) : 300},{i == 3
+						? Math.floor($springY)
+						: 800}, 600,800"
+				/>
+				<path
+					bind:this={paths[0]}
+					on:mouseenter={() => {
+						if (i != 0)
+							svg.addEventListener('mousemove', onMouseMove)
+						i = 0
+					}}
+					fill="none"
+					stroke="#ffff0000"
+					stroke-width="70.0"
+					data-d="M0,0 Q0,400, 0,800"
+					d="M0,0 Q0,400, 0,800"
+				/>
+				<path
+					bind:this={paths[1]}
+					on:mouseenter={() => {
+						if (i != 1)
+							svg.addEventListener('mousemove', onMouseMove)
+						i = 1
+					}}
+					fill="none"
+					stroke="#ffff0000"
+					stroke-width="70.0"
+					data-d="M0,0 Q300,0, 600,0"
+					d="M0,0 Q300,0, 600,0"
+				/>
+				<path
+					bind:this={paths[2]}
+					on:mouseenter={() => {
+						if (i != 2)
+							svg.addEventListener('mousemove', onMouseMove)
+						i = 2
+					}}
+					fill="none"
+					stroke="#ffff0000"
+					stroke-width="70.0"
+					data-d="M600,0 Q600,400, 600,800"
+					d="M600,0 Q600,400, 600,800"
+				/>
+				<path
+					bind:this={paths[3]}
+					on:mouseenter={() => {
+						if (i != 3)
+							svg.addEventListener('mousemove', onMouseMove)
+						i = 3
+					}}
+					fill="none"
+					stroke="#ffff0000"
+					stroke-width="70.0"
+					data-d="M0,800 Q300,800, 600,800"
+					d="M0,800 Q300,800, 600,800"
+				/>
+			</svg>
+		</div>
+	</div>
+</div>
+
+<style lang="scss">
+	#container {
+		width: 34%;
+		height: calc(100% - 2em);
+		margin-left: 3.5em;
+		position: absolute;
+		display: inline-flex;
+		flex-direction: column;
+		justify-content: center;
+
+		#canvas {
+			background-color: black;
+			width: 60vh * 1;
+			height: 80vh * 1;
+			/* border: 1px dashed #b3b3b3; */
+			/* background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' stroke='#eee' stroke-width='1.6' stroke-dasharray='2%2c 4' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e"); */
+
+			#background {
+				height: 100%;
+
+				svg {
+					transition: all 0.3s;
+				}
+			}
+		}
+	}
+</style>
