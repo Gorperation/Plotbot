@@ -1,19 +1,15 @@
 <script lang="ts">
-	let paused = false
+	import { status } from 'src/storage'
+
+	let text = `PLOTBOT • DRAWING INNOVATION • ACCURACY • AI • PLOTBOT •
+			COMPUTATIONAL PICTOGRAPHY • ML • PRECISION • CNC • PLOTBOT • GCODE •
+			PLOTBOT • MODERN-ART • DEDICATED`
 </script>
 
-<div id="scroller" class:pause={paused} on:click={() => (paused = !paused)}>
+<div id="scroller" class:pause={!$status.printing}>
 	<div>
-		<p>
-			PLOTBOT • DRAWING INNOVATION • ACCURACY • AI • PLOTBOT •
-			COMPUTATIONAL PICTOGRAPHY • ML • PRECISION • CNC • PLOTBOT • GCODE •
-			PLOTBOT • MODERN-ART • DEDICATED
-		</p>
-		<p>
-			PLOTBOT • DRAWING INNOVATION • ACCURACY • AI • PLOTBOT •
-			COMPUTATIONAL PICTOGRAPHY • ML • PRECISION • CNC • PLOTBOT • GCODE •
-			PLOTBOT • MODERN-ART • MACHINE •
-		</p>
+		<p>{text}</p>
+		<p>{text}</p>
 	</div>
 </div>
 
