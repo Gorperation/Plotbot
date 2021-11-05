@@ -1,22 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte'
 	import CanvasBackground from './CanvasBackground.svelte'
-	import { WebGLPreview } from 'gcode-preview'
-	import * as THREE from 'three'
+	// import { WebGLPreview } from 'gcode-preview'
+	// import * as THREE from 'three'
 
 	let canvas: HTMLCanvasElement
 	// WebGLPreview.
 
 	onMount(() => {
-		const preview = new WebGLPreview({
-			canvas,
-		})
-
+		// const preview = new WebGLPreview({
+		// canvas,
+		// })
 		// if (response.status !== 200) {
 		// 	console.error('ERROR. Status Code: ' + response.status)
 		// 	return
 		// }
-
 		// const gcode = await response.text()
 		// preview.processGCode(gcode)
 	})
