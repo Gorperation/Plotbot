@@ -1,12 +1,7 @@
+use async_process::{Command, Output};
+use rand::{distributions::Alphanumeric, Rng};
 use serde::Deserialize;
-use std::{
-    fs, io,
-    io::Read,
-    process::{Command, Output},
-};
-
-const GCODE_OUTPUT: &str = "superslicer/OpenSCAD Model.gcode";
-const SCAD_OUTPUT: &str = "superslicer/model.3mf";
+use std::{fs, io, io::Read};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -44,7 +39,7 @@ pub struct SlicerOptions {
     perimeter_speed: i32, // perimeter_width: f32,
 }
 impl SlicerOptions {
-    fn args(self) -> String {
+    fn args(self, run_id: &str) -> String {
         [
             format!("-g"),
             format!("--load slicer-config.ini"),
@@ -63,49 +58,61 @@ impl SlicerOptions {
             format!("--infill-speed {}", self.fill_speed),
             format!("--perimeters {}", self.perimeters),
             format!("--perimeter-speed {}", self.perimeter_speed),
-            SCAD_OUTPUT.to_string(),
+            format!("--output ../temp/output-{}.gcode", run_id),
+            format!("../temp/model-{}.3mf", run_id),
         ]
         .join(" ")
     }
 }
 
-fn openscad(svg: &str) -> Result<Output, io::Error> {
+async fn openscad(svg: &str, run_id: &str) -> Result<Output, io::Error> {
     println!("Processing OPENSCAD");
     fs::write("openscad/drawing.svg", svg)?;
     Command::new("openscad")
-        .arg(format!("-o{}", SCAD_OUTPUT))
+        .arg(format!("-o temp/model-{}.3mf", run_id))
         .arg("openscad/convert.scad")
         .output()
+        .await
 }
 
-fn superslice(options: SlicerOptions) -> std::io::Result<std::process::Output> {
+async fn superslice(options: SlicerOptions, run_id: &str) -> std::io::Result<std::process::Output> {
     println!("Processing SUPERSLICER");
     Command::new("sh")
         .arg("superslicer/superslice.sh")
-        .env("SARGS", options.args())
+        .env("SARGS", options.args(run_id))
         .output()
+        .await
 }
 
-async fn read_gcode() -> Result<String, io::Error> {
+async fn read_gcode(run_id: &str) -> Result<String, io::Error> {
     println!("Reading gcode");
     let mut data = String::new();
-    let mut f = fs::File::open(GCODE_OUTPUT)?;
-    f.read_to_string(&mut data).expect("Unable to read string");
+    let mut f = fs::File::open(format!("temp/output-{}.gcode", run_id))?;
+    f.read_to_string(&mut data).expect("Unable to read GCode");
     Ok(data)
 }
 
+fn gen_id() -> String {
+    rand::thread_rng()
+        .sample_iter(&Alphanumeric)
+        .take(10)
+        .map(char::from)
+        .collect()
+}
+
 pub async fn slice(options: SlicerOptions) -> Result<String, io::Error> {
-    let openscad_output = openscad(&options.svg)?;
+    let run_id = gen_id();
+    let openscad_output = openscad(&options.svg, &run_id).await?;
     if openscad_output.stderr.len() > 0 {
         let err = format!("OpenSCAD Error {:?}", openscad_output.stderr);
         println!("{}", err);
         return Err(io::Error::new(io::ErrorKind::Other, err));
     }
-    let superslicer_output = superslice(options)?;
+    let superslicer_output = superslice(options, &run_id).await?;
     if superslicer_output.stderr.len() > 0 {
         let err = format!("SuperSlicer Error {:?}", superslicer_output.stderr);
         println!("{}", err);
         return Err(io::Error::new(io::ErrorKind::Other, err));
     }
-    Ok(read_gcode().await?)
+    Ok(read_gcode(&run_id).await?)
 }
