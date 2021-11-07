@@ -1,3 +1,3 @@
 linear_extrude(height=0.2) {
-	import("drawing.svg");
+	import(str("/home/slicer/Plotbot/Server/temp/drawing-", id, ".svg"));
 }

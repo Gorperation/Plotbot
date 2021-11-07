@@ -1,7 +1,11 @@
 use async_process::{Command, Output};
-use rand::{distributions::Alphanumeric, Rng};
+use async_std::task;
+use rand::Rng;
 use serde::Deserialize;
+use std::time::Duration;
 use std::{fs, io, io::Read};
+
+const TEMP: &str = "/home/slicer/Plotbot/Server/temp";
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -58,25 +62,27 @@ impl SlicerOptions {
             format!("--infill-speed {}", self.fill_speed),
             format!("--perimeters {}", self.perimeters),
             format!("--perimeter-speed {}", self.perimeter_speed),
-            format!("--output ../temp/output-{}.gcode", run_id),
-            format!("../temp/model-{}.3mf", run_id),
+            format!("--output {}/output-{}.gcode", TEMP, run_id),
+            format!("{}/model-{}.3mf", TEMP, run_id),
         ]
         .join(" ")
     }
 }
 
 async fn openscad(svg: &str, run_id: &str) -> Result<Output, io::Error> {
-    println!("Processing OPENSCAD");
-    fs::write("openscad/drawing.svg", svg)?;
+    println!("Processing OPENSCAD ID:{}", run_id);
+    fs::write(format!("temp/drawing-{}.svg", run_id), svg)?;
     Command::new("openscad")
-        .arg(format!("-o temp/model-{}.3mf", run_id))
-        .arg("openscad/convert.scad")
+        .current_dir("temp")
+        .arg(format!("-o ./model-{}.3mf", run_id))
+        .arg(format!("-D id={}", run_id))
+        .arg("../openscad/convert.scad")
         .output()
         .await
 }
 
 async fn superslice(options: SlicerOptions, run_id: &str) -> std::io::Result<std::process::Output> {
-    println!("Processing SUPERSLICER");
+    println!("Processing SUPERSLICER ID:{}", run_id);
     Command::new("sh")
         .arg("superslicer/superslice.sh")
         .env("SARGS", options.args(run_id))
@@ -93,26 +99,57 @@ async fn read_gcode(run_id: &str) -> Result<String, io::Error> {
 }
 
 fn gen_id() -> String {
-    rand::thread_rng()
-        .sample_iter(&Alphanumeric)
-        .take(10)
-        .map(char::from)
-        .collect()
+    let num = rand::thread_rng().gen_range(1..999);
+    format!("{}", num)
+}
+
+// Remove all files in temp containg the run_id
+fn purge_temp(run_id: &str) {
+    let files = fs::read_dir(TEMP).expect("No temp dir!");
+    for file in files {
+        let file = file.unwrap();
+        if file.file_name().to_str().unwrap().contains(run_id) {
+            fs::remove_file(file.path()).unwrap();
+        }
+    }
+}
+
+async fn wait_for_model(run_id: &str) {
+    fn check_for_model(run_id: &str) -> bool {
+        let md = fs::metadata(format!("{}/model-{}.3mf", TEMP, run_id));
+        println!(
+            "Checking for model {} | {:?}, | {}",
+            format!("{}/model-{}.3mf", TEMP, run_id),
+            md,
+            md.is_ok() && md.as_ref().unwrap().is_file()
+        );
+        md.is_ok() && md.unwrap().is_file()
+    }
+
+    while !check_for_model(run_id) {
+        task::sleep(Duration::from_millis(500)).await;
+    }
 }
 
 pub async fn slice(options: SlicerOptions) -> Result<String, io::Error> {
     let run_id = gen_id();
-    let openscad_output = openscad(&options.svg, &run_id).await?;
-    if openscad_output.stderr.len() > 0 {
-        let err = format!("OpenSCAD Error {:?}", openscad_output.stderr);
-        println!("{}", err);
+    openscad(&options.svg, &run_id).await?;
+    // let openscad_err = openscad(&options.svg, &run_id).await?.stderr;
+    // if openscad_err.len() > 0 {
+    //     let err = String::from_utf8(openscad_err).unwrap();
+    //     println!("OpenSCAD Error: {}", err);
+    //     return Err(io::Error::new(io::ErrorKind::Other, err));
+    // }
+
+    wait_for_model(&run_id).await;
+    let superslicer_err = superslice(options, &run_id).await?.stderr;
+    if superslicer_err.len() > 0 {
+        let err = String::from_utf8(superslicer_err).unwrap();
+        println!("SuperSlicer Error: {}", err);
+        purge_temp(&run_id);
         return Err(io::Error::new(io::ErrorKind::Other, err));
     }
-    let superslicer_output = superslice(options, &run_id).await?;
-    if superslicer_output.stderr.len() > 0 {
-        let err = format!("SuperSlicer Error {:?}", superslicer_output.stderr);
-        println!("{}", err);
-        return Err(io::Error::new(io::ErrorKind::Other, err));
-    }
+
+    purge_temp(&run_id);
     Ok(read_gcode(&run_id).await?)
 }
