@@ -72,13 +72,14 @@ impl SlicerOptions {
 async fn openscad(svg: &str, run_id: &str) -> Result<Output, io::Error> {
     println!("Processing OPENSCAD ID:{}", run_id);
     fs::write(format!("temp/drawing-{}.svg", run_id), svg)?;
-    Command::new("openscad")
+    let output = Command::new("openscad")
         .current_dir("temp")
-        .arg(format!("-o ./model-{}.3mf", run_id))
+        .arg(format!("-o model-{}.3mf", run_id))
         .arg(format!("-D id={}", run_id))
         .arg("../openscad/convert.scad")
         .output()
-        .await
+        .await;
+    return output;
 }
 
 async fn superslice(options: SlicerOptions, run_id: &str) -> std::io::Result<std::process::Output> {
@@ -116,40 +117,49 @@ fn purge_temp(run_id: &str) {
 
 async fn wait_for_model(run_id: &str) {
     fn check_for_model(run_id: &str) -> bool {
-        let md = fs::metadata(format!("{}/model-{}.3mf", TEMP, run_id));
-        println!(
-            "Checking for model {} | {:?}, | {}",
-            format!("{}/model-{}.3mf", TEMP, run_id),
-            md,
-            md.is_ok() && md.as_ref().unwrap().is_file()
-        );
-        md.is_ok() && md.unwrap().is_file()
+        let files = fs::read_dir(TEMP).expect("No temp dir!");
+        for file in files {
+            let file_name = file.unwrap().file_name();
+            let file_name = file_name.to_str().unwrap();
+            if file_name.contains(run_id) && file_name.contains("model") {
+                return true;
+            }
+        }
+        return false;
     }
 
     while !check_for_model(run_id) {
-        task::sleep(Duration::from_millis(500)).await;
+        task::sleep(Duration::from_millis(70)).await;
     }
+    fs::rename(
+        format!("temp/ model-{}.3mf", run_id),
+        format!("temp/model-{}.3mf", run_id),
+    )
+    .expect("Rename failed!");
 }
 
 pub async fn slice(options: SlicerOptions) -> Result<String, io::Error> {
     let run_id = gen_id();
-    openscad(&options.svg, &run_id).await?;
-    // let openscad_err = openscad(&options.svg, &run_id).await?.stderr;
-    // if openscad_err.len() > 0 {
-    //     let err = String::from_utf8(openscad_err).unwrap();
-    //     println!("OpenSCAD Error: {}", err);
-    //     return Err(io::Error::new(io::ErrorKind::Other, err));
-    // }
-
-    wait_for_model(&run_id).await;
-    let superslicer_err = superslice(options, &run_id).await?.stderr;
-    if superslicer_err.len() > 0 {
-        let err = String::from_utf8(superslicer_err).unwrap();
-        println!("SuperSlicer Error: {}", err);
-        purge_temp(&run_id);
+    // println!("{:?}", openscad(&options.svg, &run_id).await?);
+    let openscad_res = openscad(&options.svg, &run_id).await?;
+    if openscad_res.status.code() != Some(0) {
+        let err = String::from_utf8(openscad_res.stderr)
+            .unwrap()
+            .replace("/home/slicer/Plotbot/Server", "");
         return Err(io::Error::new(io::ErrorKind::Other, err));
     }
 
+    wait_for_model(&run_id).await;
+
+    let superslicer_res = superslice(options, &run_id).await?;
+    if superslicer_res.status.code() != Some(0) {
+        let err = String::from_utf8(superslicer_res.stderr)
+            .unwrap()
+            .replace("/home/slicer/Plotbot/Server", "");
+        return Err(io::Error::new(io::ErrorKind::Other, err));
+    }
+
+    let gcode = read_gcode(&run_id).await?;
     purge_temp(&run_id);
-    Ok(read_gcode(&run_id).await?)
+    Ok(gcode)
 }
