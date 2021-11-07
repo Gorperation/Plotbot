@@ -95,9 +95,17 @@ async fn read_gcode() -> Result<String, io::Error> {
 }
 
 pub async fn slice(options: SlicerOptions) -> Result<String, io::Error> {
-    let openscad_output = openscad(&options.svg)?
-    println!("{:?}", openscad_output);
-    let superslicer_output = superslice(options)?
-    println!("{:?}", superslicer_output);
+    let openscad_output = openscad(&options.svg)?;
+    if openscad_output.stderr.len() > 0 {
+        let err = format!("OpenSCAD Error {:?}", openscad_output.stderr);
+        println!("{}", err);
+        return Err(io::Error::new(io::ErrorKind::Other, err));
+    }
+    let superslicer_output = superslice(options)?;
+    if superslicer_output.stderr.len() > 0 {
+        let err = format!("SuperSlicer Error {:?}", superslicer_output.stderr);
+        println!("{}", err);
+        return Err(io::Error::new(io::ErrorKind::Other, err));
+    }
     Ok(read_gcode().await?)
 }
