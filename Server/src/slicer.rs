@@ -8,8 +8,6 @@ use std::{
 const GCODE_OUTPUT: &str = "superslicer/OpenSCAD Model.gcode";
 const SCAD_OUTPUT: &str = "superslicer/model.3mf";
 
-const OPENSCAD: &str = "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD";
-
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase")]
 enum Fills {
@@ -73,16 +71,17 @@ impl SlicerOptions {
 
 fn openscad(svg: &str) -> Result<Output, io::Error> {
     println!("Processing OPENSCAD");
-    fs::write("drawing.svg", svg)?;
-    Command::new(OPENSCAD)
+    fs::write("openscad/drawing.svg", svg)?;
+    Command::new("openscad")
         .arg(format!("-o{}", SCAD_OUTPUT))
-        .arg("convert.scad")
+        .arg("openscad/convert.scad")
         .output()
 }
 
 fn superslice(options: SlicerOptions) -> std::io::Result<std::process::Output> {
     println!("Processing SUPERSLICER");
-    Command::new("./superslice.sh")
+    Command::new("sh")
+        .arg("superslicer/superslice.sh")
         .env("SARGS", options.args())
         .output()
 }
@@ -96,7 +95,17 @@ async fn read_gcode() -> Result<String, io::Error> {
 }
 
 pub async fn slice(options: SlicerOptions) -> Result<String, io::Error> {
-    println!("{:?}", openscad(&options.svg)?);
-    println!("{:?}", superslice(options)?);
+    let openscad_output = openscad(&options.svg)?;
+    if openscad_output.stderr.len() > 0 {
+        let err = format!("OpenSCAD Error {:?}", openscad_output.stderr);
+        println!("{}", err);
+        return Err(io::Error::new(io::ErrorKind::Other, err));
+    }
+    let superslicer_output = superslice(options)?;
+    if superslicer_output.stderr.len() > 0 {
+        let err = format!("SuperSlicer Error {:?}", superslicer_output.stderr);
+        println!("{}", err);
+        return Err(io::Error::new(io::ErrorKind::Other, err));
+    }
     Ok(read_gcode().await?)
 }
