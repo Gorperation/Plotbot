@@ -35,8 +35,8 @@ async fn gcode(mut req: Request<()>) -> Result<Response, tide::Error> {
 }
 
 async fn ghpost(mut req: Request<()>) -> tide::Result {
-    println!("Pulling from Github");
     let body = req.body_json().await?;
+    println!("Pulling from Github {:?}", body);
     let token = std::env::var("GH_TOKEN")?;
     // let signature = format!("sha1={}", Sha256::digest(body.as_bytes()).to_string());
     // if body.
