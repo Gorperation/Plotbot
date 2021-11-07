@@ -1,2 +1,3 @@
 #!/bin/bash
-superslicer -g --load slicer-config.ini $SARGS model.3mf
+cd /home/slicer/Plotbot/Server/superslicer
+./superslicer -g --load slicer-config.ini $SARGS model.3mf

@@ -10,7 +10,7 @@ async fn index(_req: Request<()>) -> tide::Result {
 }
 
 async fn gcode(mut req: Request<()>) -> Result<Response, tide::Error> {
-    println!("Processing gcode");
+    println!("Slicing GCode");
     let body_maybe: Result<slicer::SlicerOptions, tide::Error> = req.body_json().await;
     let body = match body_maybe {
         Ok(body) => body,
@@ -47,8 +47,10 @@ async fn ghpost(mut req: Request<()>) -> tide::Result {
 
 #[async_std::main]
 async fn main() -> tide::Result<()> {
+    println!("Starting...");
     let mut app = tide::new();
     app.at("/").get(index);
+    println!("Listening on port 8080");
     app.at("/cam").post(gcode);
     app.at("/ghpush").post(ghpost);
     app.listen("127.0.0.1:8080").await?;
