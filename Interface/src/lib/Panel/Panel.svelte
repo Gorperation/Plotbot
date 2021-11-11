@@ -1,14 +1,20 @@
 <script lang="ts">
+	import StopButtons from './StopButtons.svelte'
 </script>
 
 <div id="container">
 	<div id="panel" />
-	<!-- <div class="border" style="--m: 0.5em; --o: 0.8;" /> -->
-	<!-- <div class="border" style="--m: 1.0em; --o: 0.6;" /> -->
+	<div id="content">
+		<StopButtons />
+	</div>
 	<h1><span>STATUS</span></h1>
 </div>
 
 <style lang="scss">
+	#content {
+		position: relative;
+	}
+
 	#container {
 		width: 28%;
 		height: 100%;
@@ -57,13 +63,6 @@
 				box-shadow: 5px 5px 0px -0.5px #000000,
 					5px 5px 0px 0.5px #b3b3b3;
 			}
-		}
-
-		.border {
-			margin: var(--m);
-			opacity: var(--o);
-			height: calc(90% - var(--m) * 2);
-			width: calc(100% - var(--m) * 2);
 		}
 	}
 </style>

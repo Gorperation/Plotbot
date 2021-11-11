@@ -23,7 +23,7 @@
 <div id="container">
 	<div id="canvas">
 		<CanvasBackground />
-		<canvas bind:this={canvas} />
+		<!-- <canvas bind:this={canvas} /> -->
 	</div>
 </div>
 
@@ -41,12 +41,6 @@
 			background-color: black;
 			width: 60vh * 1;
 			height: 80vh * 1;
-
-			canvas {
-				outline: none;
-				width: 100%;
-				height: 100%;
-			}
 		}
 	}
 </style>

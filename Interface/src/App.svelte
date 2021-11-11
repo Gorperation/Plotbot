@@ -1,8 +1,9 @@
 <script lang="ts">
+	import Doodads from './lib/Doodads.svelte'
 	import Canvas from './lib/Canvas/Canvas.svelte'
 	import Background from './lib/Background.svelte'
 	import Tag from './lib/Tag.svelte'
-	import Panel from './lib/Panel.svelte'
+	import Panel from './lib/Panel/Panel.svelte'
 	import Scroller from './lib/Scroller.svelte'
 
 	// Must append mm to width and height attr of SVG
@@ -15,6 +16,7 @@
 	<Tag />
 </main>
 <Scroller />
+<Doodads />
 
 <style lang="scss">
 	:root {

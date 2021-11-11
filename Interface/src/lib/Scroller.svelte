@@ -23,6 +23,7 @@
 		font-size: 1em;
 		background: #f5f5f5;
 		cursor: default;
+		overflow: hidden;
 
 		&.pause div {
 			animation-play-state: paused;
