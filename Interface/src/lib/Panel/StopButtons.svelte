@@ -3,52 +3,67 @@
 </script>
 
 <div>
-	<svg
-		width="32"
-		height="45"
-		viewBox="0 0 32 45"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-	>
-		<path
-			d="M22.7354 1.62424H30.6392V43.1191H22.7354V1.62424Z"
-			fill="#161616"
-		/>
-		<path d="M1 1.62424H8.90378V43.1191H1V1.62424Z" fill="#161616" />
-		<path
-			d="M22.7354 1.62424H30.6392V43.1191H22.7354V1.62424Z"
-			stroke="white"
-			stroke-width="2"
-		/>
-		<path
-			d="M1 1.62424H8.90378V43.1191H1V1.62424Z"
-			stroke="white"
-			stroke-width="2"
-		/>
-	</svg>
-	<Icon />
-	<svg
-		width="61"
-		height="61"
-		viewBox="0 0 61 61"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-	>
-		<path
-			d="M21.9583 9.73473L39.5096 9.73472L51.9203 22.1454L51.9203 39.6967L39.5096 52.1074L21.9583 52.1074L9.54764 39.6967L9.54764 22.1454L21.9583 9.73473Z"
-			fill="#161616"
-			stroke="white"
-			stroke-width="2"
-		/>
-	</svg>
+	<span>
+		<svg
+			width="42"
+			height="42"
+			viewBox="0 0 48 48"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<rect
+				width="12.5"
+				height="48"
+				fill="#161616"
+				stroke="white"
+				stroke-width="2"
+				x="5"
+			/>
+			<rect
+				width="12.5"
+				height="48"
+				fill="#161616"
+				stroke="white"
+				stroke-width="2"
+				x="31"
+			/>
+		</svg>
+	</span>
+	<!-- <Icon /> -->
+	<span>
+		<svg
+			width="42"
+			height="42"
+			viewBox="0 0 48 48"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+		>
+			<path
+				d="M14.935 1.856L33.715 1.856L46.995 15.136L46.995 33.915L33.715 47.195L14.935 47.195L1.656 33.915L1.656 15.136L14.935 1.856Zh2.14"
+				fill="#161616"
+				stroke="white"
+				stroke-width="2"
+			/>
+		</svg>
+	</span>
 </div>
 
 <style lang="scss">
 	div {
+		margin-top: 2.5em;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
-		gap: 2em;
+		gap: 3.4em;
+	}
+
+	span {
+		cursor: pointer;
+		transition: all 0.2s;
+
+		&:hover {
+			transform: scale(1.03);
+		}
 	}
 </style>
