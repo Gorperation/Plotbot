@@ -23,6 +23,7 @@ enum Fills {
     Archimedeanchords,
     Octagramspiral,
     Scatteredrectilinear,
+    Adaptivecubic,
 }
 impl Fills {
     fn to_string(&self) -> String {

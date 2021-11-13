@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Settings from './lib/Settings/Settings.svelte'
 	import Doodads from './lib/Doodads.svelte'
 	import Canvas from './lib/Canvas/Canvas.svelte'
 	import Background from './lib/Background.svelte'
@@ -13,6 +14,7 @@
 	<Background />
 	<Panel />
 	<Canvas />
+	<Settings />
 	<Tag />
 </main>
 <Scroller />

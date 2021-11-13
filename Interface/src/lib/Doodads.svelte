@@ -1,9 +1,15 @@
 <script lang="ts">
+	import { connect } from './bluetooth'
+
+	function click(e: MouseEvent) {
+		connect()
+	}
 </script>
 
 <svg
-	width="197"
-	height="172"
+	on:click={click}
+	width={197 * 1.1}
+	height={172 * 1.1}
 	viewBox="0 0 197 172"
 	fill="none"
 	xmlns="http://www.w3.org/2000/svg"

@@ -2,27 +2,31 @@
 	export let size: string | number = '1'
 </script>
 
-<button style="transform: scale({size});"><slot /></button>
+<button style="transform: scale({size});" class={$$props.class}><slot /></button
+>
 
 <style lang="scss">
 	button {
-		height: 2.5em;
-		width: 6em;
+		height: 2.05rem;
+		width: 5.1rem;
+
+		font-family: 'Roboto', sans-serif;
+		font-weight: 500;
+		font-size: 0.77em;
+		letter-spacing: 0.07em;
 
 		cursor: pointer;
 		background: black;
 		color: white;
-		border: 1px solid white;
+		/* border: none; */
+		border: 2px solid hsl(0, 0%, 92%);
 		box-sizing: border-box;
-		transition: all 0.2s cubic-bezier(0.33, 1, 0.68, 1);
+		transition: all 0.3s cubic-bezier(0.33, 1, 0.68, 1);
 
 		&:hover {
-			background: rgb(240, 240, 240);
+			background: hsl(0, 0%, 99%);
+			border: 2px solid white;
 			color: black;
-		}
-
-		&:active {
-			background: rgb(226, 226, 226);
 		}
 	}
 </style>

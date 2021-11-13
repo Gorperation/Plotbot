@@ -1,8 +1,10 @@
 <script lang="ts">
-	export let options = ['Dropdown']
+	export let options: { [display: string]: string } = { Dropdown: 'dropdown' }
 	export let selected = 0
 
-	const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+	$: keys = Object.keys(options)
+
+	// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 	let container: HTMLDivElement
 
@@ -10,44 +12,61 @@
 		selected = index
 		container.blur()
 	}
+
+	function blur(event: MouseEvent) {
+		if (!container.classList.contains('focus')) return
+		event.preventDefault()
+		container.blur()
+	}
 </script>
 
 <div
 	class="container {'focus' && 0}"
 	tabindex="0"
-	style="--num: {options.length}"
+	style="--num: {keys.length}"
 	bind:this={container}
 	on:focus={() => container.classList.add('focus')}
 	on:blur={() => setTimeout(() => container.classList.remove('focus'), 100)}
 >
 	<svg
-		width="9"
-		height="6"
+		width={9 * 1.2}
+		height={6 * 1.2}
 		viewBox="0 0 9 6"
 		fill="none"
 		xmlns="http://www.w3.org/2000/svg"
 	>
-		<path d="M1 1L4.5 4.5L8 1" stroke="black" />
+		<path d="M1 1L4.5 4.5L8 1" stroke="white" />
 	</svg>
 
-	<option class="selected">{options[selected]}</option>
+	<option class="selected" on:mousedown={blur} value={options[keys[selected]]}
+		>{keys[selected]}</option
+	>
 	<div class="list">
-		{#each options as option, i}
-			<option on:click={(e) => select(e, i)}>{option}</option>
+		{#each keys as key, i}
+			<option on:click={(e) => select(e, i)} value={options[key]}
+				>{key}</option
+			>
 		{/each}
 	</div>
 </div>
 
 <style lang="scss">
 	svg {
-		cursor: pointer;
 		position: absolute;
-		top: 0.6em;
+		top: 0.55em;
 		right: 0.5em;
+		transition: transform 0.2s ease-out;
 	}
 
 	option {
 		padding: 0.12em 0.35em;
+		user-select: none;
+
+		font-family: 'Roboto', sans-serif;
+		font-weight: 500;
+		font-size: 0.91em;
+		line-height: 1.3em;
+		letter-spacing: 0.07em;
 
 		&:not(.selected) {
 			height: 1ch;
@@ -55,7 +74,8 @@
 			transition: all 0.07s;
 
 			&:hover {
-				background-color: hsl(0deg, 0%, 90%);
+				background-color: hsl(0deg, 0%, 94%);
+				color: black;
 			}
 		}
 	}
@@ -65,33 +85,30 @@
 		padding: $padheight 0;
 		padding-top: $padheight;
 		/* background: $input-background; */
-		border: 2px solid #2b2b2b;
+		border: 2px solid hsl(0, 0%, 92%);
 		box-sizing: border-box;
-		border-radius: 5px;
 		transition: all 0.2s cubic-bezier(0.33, 1, 0.68, 1);
 		height: 1.9em;
-		width: 7.5em;
+		width: 10em;
 		font-size: 0.9em;
 		overflow: hidden;
+		text-overflow: ellipsis;
 		position: relative;
 
 		display: inline-block;
 		cursor: default;
 
-		&:hover {
-			box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+		&:hover svg {
+			transform: translateY(0.08em);
+		}
+		&.focus svg {
+			transform: translateY(0.13em);
 		}
 
 		&:focus {
-			height: calc(1.9em + 1.43em * var(--num));
-			box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-
-			option:not(.selected) {
-				/* cursor: pointer; */
-			}
-		}
-		&:not(.focus) option {
-			cursor: pointer;
+			height: calc(1.94em + 1.3em * var(--num));
+			border-color: hsl(0, 0%, 99%);
+			/* box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px; */
 		}
 		&.focus {
 			option {

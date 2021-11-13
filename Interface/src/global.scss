@@ -9,3 +9,9 @@ body {
 	color: white;
 	font-family: 'Roboto', sans-serif;
 }
+
+.specialBG {
+	background-color: black;
+	background-color: transparentize(black, 0.6);
+	backdrop-filter: blur(3px);
+}

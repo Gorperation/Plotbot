@@ -1,5 +1,7 @@
 import { writable } from 'svelte/store'
 
+// export const device: Writable<BluetoothDevice> = writable(undefined)
+
 export const status = writable({
 	printing: false,
 	paused: false,
