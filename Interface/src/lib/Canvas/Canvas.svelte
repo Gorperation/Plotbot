@@ -20,7 +20,7 @@
 	})
 </script>
 
-<div id="container">
+<div class="container">
 	<div id="canvas">
 		<CanvasBackground />
 		<!-- <canvas bind:this={canvas} /> -->
@@ -28,7 +28,7 @@
 </div>
 
 <style lang="scss">
-	#container {
+	.container {
 		height: calc(100% - 2em);
 		margin-left: 3.5em;
 		position: absolute;

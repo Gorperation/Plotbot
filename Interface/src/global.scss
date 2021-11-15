@@ -10,8 +10,16 @@ body {
 	font-family: 'Roboto', sans-serif;
 }
 
-.specialBG {
-	background-color: black;
+.blur {
 	background-color: transparentize(black, 0.6);
 	backdrop-filter: blur(3px);
+	box-shadow: 6px 6px 0px -0.5px #000000, 6px 6px 0px 0.3px #fff,
+		inset 0px 0px 25px 0px transparentize(white, 0.9);
+	transition: all 0.35s;
+
+	&:hover {
+		backdrop-filter: blur(4px);
+		box-shadow: 6px 6px 0px -0.5px #000000, 6px 6px 0px 0.3px #fff,
+			inset 0px 0px 25px 0px transparentize(white, 0.9);
+	}
 }

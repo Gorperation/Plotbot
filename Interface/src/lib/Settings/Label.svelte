@@ -3,13 +3,13 @@
 	export let unit = ''
 </script>
 
-<div id="container">
+<div class="container">
 	<h3>{text}</h3>
 	<span><slot /></span><span class="unit">{unit}</span>
 </div>
 
 <style lang="scss">
-	#container {
+	.container {
 		/* margin: 0.6em 0; */
 		height: 2.2em;
 		display: flex;

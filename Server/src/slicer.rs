@@ -34,10 +34,10 @@ impl Fills {
 #[derive(Debug, Deserialize)]
 pub struct SlicerOptions {
     svg: String,
-    fill_density: f32,
+    fill_density: i32,
     fill_pattern: Fills,
     fill_connected: bool,
-    fill_overlap: f32,
+    fill_overlap: i32,
     fill_angle: i32,
     fill_speed: i32,
     perimeters: i32,
@@ -48,7 +48,7 @@ impl SlicerOptions {
         [
             format!("-g"),
             format!("--load slicer-config.ini"),
-            format!("--fill-density {}%", self.fill_density * 100.0),
+            format!("--fill-density {}%", self.fill_density.to_string()),
             format!("--fill-pattern {}", self.fill_pattern.to_string()),
             format!(
                 "--infill-connection {}",
@@ -58,7 +58,7 @@ impl SlicerOptions {
                     "notconnected"
                 }
             ),
-            format!("--infill-overlap {}%", self.fill_overlap * 100.0),
+            format!("--infill-overlap {}%", self.fill_overlap.to_string()),
             format!("--fill-angle {}", self.fill_angle),
             format!("--infill-speed {}", self.fill_speed),
             format!("--perimeters {}", self.perimeters),

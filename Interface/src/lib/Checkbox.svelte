@@ -2,10 +2,12 @@
 	export let checked = false
 </script>
 
-<label class="container">
-	<input type="checkbox" />
-	<span class="checkmark" />
-</label>
+<div>
+	<label class="container">
+		<input type="checkbox" bind:checked />
+		<span class="checkmark" />
+	</label>
+</div>
 
 <style lang="scss">
 	.container {
@@ -34,7 +36,7 @@
 		width: $size;
 		height: $size;
 		border: 2px solid hsl(0, 0%, 92%);
-		transition: all 0.18s cubic-bezier(0.25, 1, 0.5, 1);
+		transition: all 0.22s cubic-bezier(0.25, 1, 0.5, 1);
 	}
 
 	/* On mouse-over, add a grey background color */

@@ -9,7 +9,7 @@
 	export let time: number
 </script>
 
-<div id="container">
+<div class="container">
 	<div class="stats">
 		<div class="col">
 			<span>Status</span>
@@ -34,7 +34,7 @@
 </div>
 
 <style lang="scss">
-	#container {
+	.container {
 		border: 1px solid #ccc;
 		padding: 0.5em;
 		padding-left: 0.7em;

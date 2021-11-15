@@ -4,7 +4,7 @@
 	import Label from './Label.svelte'
 </script>
 
-<div id="container">
+<div class="container">
 	<Label>DRAWINGS</Label>
 	<Drawing
 		name={'Drawing.svg'}

@@ -2,13 +2,13 @@
 	export let progress = 1
 </script>
 
-<div id="container" style="--progress:{progress * 100}%">
+<div class="container" style="--progress:{progress * 100}%">
 	<div class="bar"><div class="progress" /></div>
 	<span class="percent">{Math.floor(progress * 100)}%</span>
 </div>
 
 <style lang="scss">
-	#container {
+	.container {
 		position: relative;
 	}
 	span {

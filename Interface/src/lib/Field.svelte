@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from 'svelte'
+
 	export let size = '10'
 	export let placeholder = ''
 	export let value = ''
@@ -13,15 +15,16 @@
 			input.value = input.value.slice(0, length)
 	}
 
-	function onBlur(event: InputEvent) {
+	function onBlur(event: FocusEvent) {
 		if (max && parseFloat(input.value) > max) event.preventDefault()
 	}
+
+	onMount(() => (input.type = type))
 </script>
 
 <input
-	{type}
 	{placeholder}
-	{value}
+	bind:value
 	style="--size:{size}em;"
 	on:blur={onBlur}
 	on:input={onInput}

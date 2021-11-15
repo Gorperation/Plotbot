@@ -1,8 +1,10 @@
 <script lang="ts">
 	export let options: { [display: string]: string } = { Dropdown: 'dropdown' }
 	export let selected = 0
+	export let value = options[selected]
 
 	$: keys = Object.keys(options)
+	$: value = options[selected]
 
 	// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -20,6 +22,7 @@
 	}
 </script>
 
+<!-- 0 is a hack to force the focus class to be applied -->
 <div
 	class="container {'focus' && 0}"
 	tabindex="0"
@@ -68,6 +71,8 @@
 		line-height: 1.3em;
 		letter-spacing: 0.07em;
 
+		background: black;
+
 		&:not(.selected) {
 			height: 1ch;
 			display: none;
@@ -94,6 +99,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		position: relative;
+		z-index: 30;
 
 		display: inline-block;
 		cursor: default;
