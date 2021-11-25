@@ -1,3 +1,4 @@
+use tide::http::headers::HeaderValue;
 use tide::security::{CorsMiddleware, Origin};
 use tide::{Request, Response, StatusCode};
 
@@ -29,15 +30,11 @@ async fn gcode(mut req: Request<()>) -> Result<Response, tide::Error> {
         Err(e) => {
             return Ok(Response::builder(StatusCode::InternalServerError)
                 .body(e.to_string())
-                .header("Access-Control-Allow-Origin", "*")
                 .build())
         }
     };
 
-    Ok(Response::builder(StatusCode::Ok)
-        .body(gcode)
-        .header("Access-Control-Allow-Origin", "*")
-        .build())
+    Ok(gcode.into())
 }
 
 async fn ghpost(mut req: Request<()>) -> tide::Result {
@@ -55,6 +52,11 @@ async fn ghpost(mut req: Request<()>) -> tide::Result {
 async fn main() -> tide::Result<()> {
     println!("Starting...");
     let mut app = tide::new();
+    let cors = CorsMiddleware::new()
+        .allow_methods("POST".parse::<HeaderValue>().unwrap())
+        .allow_origin(Origin::from("*"))
+        .allow_credentials(false);
+    app.with(cors);
     app.at("/").get(index);
     println!("Listening on port 8080");
     app.at("/cam").post(gcode);
