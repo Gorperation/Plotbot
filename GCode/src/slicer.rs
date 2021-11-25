@@ -5,7 +5,7 @@ use serde::Deserialize;
 use std::time::Duration;
 use std::{fs, io, io::Read};
 
-const TEMP: &str = "/home/slicer/Plotbot/Server/temp";
+const TEMP: &str = "/home/slicer/Plotbot/GCode/temp";
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "lowercase")]
@@ -146,7 +146,7 @@ pub async fn slice(options: SlicerOptions) -> Result<String, io::Error> {
     if openscad_res.status.code() != Some(0) {
         let err = String::from_utf8(openscad_res.stderr)
             .unwrap()
-            .replace("/home/slicer/Plotbot/Server", "");
+            .replace("/home/slicer/Plotbot/GCode", "");
         return Err(io::Error::new(io::ErrorKind::Other, err));
     }
 
@@ -156,7 +156,7 @@ pub async fn slice(options: SlicerOptions) -> Result<String, io::Error> {
     if superslicer_res.status.code() != Some(0) {
         let err = String::from_utf8(superslicer_res.stderr)
             .unwrap()
-            .replace("/home/slicer/Plotbot/Server", "");
+            .replace("/home/slicer/Plotbot/GCode", "");
         return Err(io::Error::new(io::ErrorKind::Other, err));
     }
 
