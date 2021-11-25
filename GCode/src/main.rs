@@ -1,4 +1,6 @@
+use tide::security::{CorsMiddleware, Origin};
 use tide::{Request, Response, StatusCode};
+
 // use sha2::Sha256;
 // use hmac::{Hmac, Mac, NewMac};
 // use tide::prelude::*;
@@ -27,6 +29,7 @@ async fn gcode(mut req: Request<()>) -> Result<Response, tide::Error> {
         Err(e) => {
             return Ok(Response::builder(StatusCode::InternalServerError)
                 .body(e.to_string())
+                .header("Access-Control-Allow-Origin", "*")
                 .build())
         }
     };
