@@ -17,7 +17,9 @@
 
 <style lang="scss">
 	.container {
-		width: 28%;
+		/* flex-wrap: wrap; */
+		flex: 1;
+		min-width: max(15em, 27vw);
 		max-width: 27em;
 		height: 100%;
 		margin-left: 2.5em;

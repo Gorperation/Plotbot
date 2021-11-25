@@ -3,28 +3,22 @@
 	import { sineIn } from 'svelte/easing'
 	const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-	let marching = false
+	export let marching = false
 	let style = 'dashed'
 	let borderOffset = 0
-	async function marchIn() {
-		marching = true
-		while (marching == true) {
-			await delay(10)
-			borderOffset += 0.1
-		}
-		for (let index = 28; index > 0; index--) {
-			const p = sineIn(index / 28)
-			await delay(10)
-			borderOffset += p / 10
+	let timer
+
+	$: {
+		if (marching) {
+			if (!timer) timer = setInterval(() => (borderOffset += 0.1), 10)
+		} else {
+			clearInterval(timer)
+			timer = null
 		}
 	}
 </script>
 
-<div
-	id="background"
-	on:mouseenter={marchIn}
-	on:mouseleave={() => (marching = false)}
->
+<div id="background">
 	<svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
 		{#if style == 'dashed'}
 			<rect

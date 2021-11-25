@@ -3,7 +3,6 @@
 	import Button from '../Button.svelte'
 	import { Status } from './index.d'
 
-	export let name: string
 	export let sizeKB: number
 	export let status: Status
 	export let time: number
@@ -37,8 +36,9 @@
 	.container {
 		border: 1px solid #ccc;
 		padding: 0.5em;
-		padding-left: 0.7em;
+		padding-left: 0.6em;
 		/* padding-bottom: 1em; */
+		position: relative;
 		display: flex;
 		gap: 1em;
 	}

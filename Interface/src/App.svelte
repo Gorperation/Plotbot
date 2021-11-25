@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Toasts from './lib/Toasts/Toasts.svelte'
 	import Settings from './lib/Settings/Settings.svelte'
 	import Doodads from './lib/Doodads.svelte'
 	import Canvas from './lib/Canvas/Canvas.svelte'
@@ -16,6 +17,7 @@
 	<Canvas />
 	<Settings />
 	<Tag />
+	<Toasts />
 </main>
 <Scroller />
 <Doodads />
@@ -29,5 +31,9 @@
 	main {
 		margin-top: 2em;
 		height: calc(100vh - 2em);
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 3em;
 	}
 </style>

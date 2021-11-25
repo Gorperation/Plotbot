@@ -1,9 +1,15 @@
 <script lang="ts">
 	export let size: string | number = '1'
+	export let click = () => {}
 </script>
 
-<button style="transform: scale({size});" class={$$props.class}><slot /></button
+<button
+	style="transform: scale({size});"
+	class={$$props.class}
+	on:click={click}
 >
+	<slot />
+</button>
 
 <style lang="scss">
 	button {
@@ -15,11 +21,13 @@
 		font-size: 0.77em;
 		letter-spacing: 0.07em;
 
+		display: inline-block;
+
 		cursor: pointer;
 		background: black;
 		color: white;
 		/* border: none; */
-		border: 2px solid hsl(0, 0%, 92%);
+		border: 1px solid hsl(0, 0%, 92%);
 		box-sizing: border-box;
 		transition: all 0.3s cubic-bezier(0.33, 1, 0.68, 1);
 

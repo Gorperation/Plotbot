@@ -1,10 +1,10 @@
 <script lang="ts">
-	export let checked = false
+	export let value = false
 </script>
 
 <div>
 	<label class="container">
-		<input type="checkbox" bind:checked />
+		<input type="checkbox" bind:checked={value} />
 		<span class="checkmark" />
 	</label>
 </div>
@@ -36,7 +36,7 @@
 		width: $size;
 		height: $size;
 		border: 2px solid hsl(0, 0%, 92%);
-		transition: all 0.22s cubic-bezier(0.25, 1, 0.5, 1);
+		transition: all 0.15s cubic-bezier(0.25, 1, 0.5, 1);
 	}
 
 	/* On mouse-over, add a grey background color */
@@ -66,7 +66,7 @@
 	/* Style the checkmark/indicator */
 	.container .checkmark:after {
 		display: block;
-		left: 0.26em;
+		left: 0.3em;
 		top: 0.05em;
 		width: 5px;
 		height: 10px;
@@ -74,6 +74,6 @@
 		border-width: 0 3px 3px 0;
 		transform: rotate(45deg) scale(0.6);
 		transform-origin: center;
-		transition: transform 0.18s cubic-bezier(0.25, 1, 0.5, 1);
+		transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
 	}
 </style>

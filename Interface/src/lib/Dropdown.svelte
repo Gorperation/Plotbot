@@ -22,7 +22,6 @@
 	}
 </script>
 
-<!-- 0 is a hack to force the focus class to be applied -->
 <div
 	class="container {'focus' && 0}"
 	tabindex="0"
@@ -57,7 +56,7 @@
 	svg {
 		position: absolute;
 		top: 0.55em;
-		right: 0.5em;
+		right: 0.84em;
 		transition: transform 0.2s ease-out;
 	}
 
@@ -99,7 +98,8 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		position: relative;
-		z-index: 30;
+		z-index: 10;
+		overflow: visible;
 
 		display: inline-block;
 		cursor: default;
