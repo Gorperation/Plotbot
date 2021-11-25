@@ -9,7 +9,6 @@
 
 	// })
 
-	let svgIter = 0
 	let svgContainer = document.createElement('div')
 	let svg: SVGSVGElement
 	export let svgData: string
@@ -49,8 +48,14 @@
 
 		svg.setAttribute('width', '100%')
 		svg.setAttribute('height', '100%')
-		svgIter = svgIter + 1
-		console.log(svg.outerHTML)
+		const viewbox = svg.getAttribute('viewBox').split(' ')
+		const rect: SVGRectElement = svg.querySelector('rect')
+		if (
+			rect.getAttribute('fill') == 'white' &&
+			rect.getAttribute('width') === viewbox[2] &&
+			rect.getAttribute('height') === viewbox[3]
+		)
+			rect.remove()
 	}
 
 	onMount(() => load())
