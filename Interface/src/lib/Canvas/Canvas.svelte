@@ -1,45 +1,60 @@
 <script lang="ts">
+	import Button from './../Button.svelte'
+	import FigmaView from './FigmaView.svelte'
 	import { onMount } from 'svelte'
 	import CanvasBackground from './CanvasBackground.svelte'
-	// import { WebGLPreview } from 'gcode-preview'
-	// import * as THREE from 'three'
+	import { copyFigmaArtboard, loadFigmaURL } from 'src/clipboard'
+	import { drawings, figmaDoc } from 'src/storage'
+	import { popToast } from '../Toasts/toast'
 
-	let canvas: HTMLCanvasElement
-	// WebGLPreview.
+	let queue: () => void, marching: boolean
+	let svgData: string
 
-	onMount(() => {
-		// const preview = new WebGLPreview({
-		// canvas,
-		// })
-		// if (response.status !== 200) {
-		// 	console.error('ERROR. Status Code: ' + response.status)
-		// 	return
-		// }
-		// const gcode = await response.text()
-		// preview.processGCode(gcode)
-	})
+	async function print() {
+		popToast('Preparing to plot your design...')
+		const res = await fetch('')
+		// drawings.update((list) => [...list, svgData])
+	}
 </script>
 
 <div class="container">
-	<div id="canvas">
-		<CanvasBackground />
+	<div class="buttons">
+		<Button click={print}>Print</Button>
+		<Button click={loadFigmaURL}>Refresh</Button>
+		<Button>Mark</Button>
+		<Button click={copyFigmaArtboard}>Copy</Button>
+	</div>
+	<div
+		id="canvas"
+		on:mouseenter={() => (marching = true)}
+		on:mouseleave={() => (marching = false)}
+	>
+		<CanvasBackground bind:marching />
 		<!-- <canvas bind:this={canvas} /> -->
+		<FigmaView bind:svgData />
 	</div>
 </div>
 
 <style lang="scss">
 	.container {
 		height: calc(100% - 2em);
-		margin-left: 3.5em;
-		position: absolute;
+		position: relative;
+		/* top: -5em; */
 		display: inline-flex;
 		flex-direction: column;
 		justify-content: center;
+
+		.buttons {
+			margin-bottom: 0.3em;
+			display: flex;
+			gap: 0.3em;
+		}
 
 		#canvas {
 			background-color: black;
 			width: min(225vh * 0.3, 225vw * 0.18);
 			height: min(265vh * 0.3, 265vw * 0.18);
+			position: relative;
 		}
 	}
 </style>
