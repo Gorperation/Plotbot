@@ -34,7 +34,10 @@ async fn gcode(mut req: Request<()>) -> Result<Response, tide::Error> {
         }
     };
 
-    Ok(gcode.into())
+    Ok(Response::builder(StatusCode::Ok)
+        .body(gcode)
+        .header("Access-Control-Allow-Origin", "*")
+        .build())
 }
 
 async fn ghpost(mut req: Request<()>) -> tide::Result {
