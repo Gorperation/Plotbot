@@ -1,10 +1,10 @@
 <script lang="ts">
 	export let options: { [display: string]: string } = { Dropdown: 'dropdown' }
 	export let selected = 0
-	export let value = options[selected]
+	export let value = Object.values(options)[selected]
 
 	$: keys = Object.keys(options)
-	$: value = options[selected]
+	$: value = Object.values(options)[selected]
 
 	// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 

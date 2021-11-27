@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { options as optionStore } from 'src/storage'
 	import Field from '../Field.svelte'
 	import Checkbox from '../Checkbox.svelte'
 	import Dropdown from '../Dropdown.svelte'
@@ -21,15 +22,28 @@
 
 	let fill = false
 	let perimeter = true
-	let options = {
+	$: options = {
 		fill_density: fill ? '100' : '0',
-		fill_pattern: '',
+		fill_pattern: 'monotonic',
 		fill_connected: true,
 		fill_overlap: '100',
 		fill_angle: '45',
 		fill_speed: '60',
 		perimeters: '1',
 		perimeter_speed: '60',
+	}
+
+	$: {
+		optionStore.set({
+			fill_density: parseInt(options.fill_density),
+			fill_pattern: options.fill_pattern,
+			fill_connected: options.fill_connected,
+			fill_overlap: parseInt(options.fill_overlap),
+			fill_angle: parseInt(options.fill_angle),
+			fill_speed: parseInt(options.fill_speed),
+			perimeters: parseInt(options.perimeters),
+			perimeter_speed: parseInt(options.perimeter_speed),
+		})
 	}
 </script>
 
@@ -68,9 +82,6 @@
 					length={3}
 					bind:value={options.fill_angle}
 				/>
-			</Label>
-			<Label text="Density" unit="%">
-				<Field size="2" length={3} bind:value={options.fill_density} />
 			</Label>
 		</div>
 		<Label text="Outline">
