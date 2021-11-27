@@ -11,7 +11,7 @@
 
 	let svgContainer = document.createElement('div')
 	let svg: SVGSVGElement
-	export let svgData: string
+	export let svgData = ''
 	$: svgData = svg?.outerHTML
 
 	const figmaDoc = {
@@ -39,7 +39,7 @@
 
 	function modifySVG(svgData: string) {
 		svgContainer.innerHTML = svgData
-		console.log(svgContainer)
+		// console.log(svgContainer)
 		svg = svgContainer.querySelector('svg') as SVGSVGElement
 		if (!svg) {
 			popToast('No svg found in Figma Response', 'error')

@@ -1,18 +1,41 @@
 <script lang="ts">
 	import Button from './../Button.svelte'
 	import FigmaView from './FigmaView.svelte'
-	import { onMount } from 'svelte'
 	import CanvasBackground from './CanvasBackground.svelte'
 	import { copyFigmaArtboard, loadFigmaURL } from 'src/clipboard'
-	import { drawings, figmaDoc } from 'src/storage'
+	import { drawings, figmaDoc, get, options } from 'src/storage'
 	import { popToast } from '../Toasts/toast'
+	import { sendGcode } from '../gcode'
 
 	let queue: () => void, marching: boolean
 	let svgData: string
 
+	const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 	async function print() {
 		popToast('Preparing to plot your design...')
-		const res = await fetch('')
+
+		let data: any = get(options)
+		console.log('Getting store in print()', data)
+		data.svg = svgData
+
+		const res = await fetch('https://plotbot.art/api/cam', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(data),
+		})
+		const gcode = await res.text()
+
+		console.log(gcode)
+		// window.location.href =
+		// 	'data:application/octet-stream,' + encodeURIComponent(gcode)
+
+		const lines = gcode.split('\n')
+		console.log(lines.length, 'lines')
+		sendGcode(lines)
+
 		// drawings.update((list) => [...list, svgData])
 	}
 </script>
