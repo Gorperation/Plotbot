@@ -6,8 +6,6 @@
 	$: keys = Object.keys(options)
 	$: value = Object.values(options)[selected]
 
-	// const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
 	let container: HTMLDivElement
 
 	function select(event: MouseEvent, index: number) {

@@ -1,22 +1,20 @@
 <script lang="ts">
+	import { delay } from 'src/ts/utility'
 	import Button from './../Button.svelte'
 	import FigmaView from './FigmaView.svelte'
 	import CanvasBackground from './CanvasBackground.svelte'
-	import { copyFigmaArtboard, loadFigmaURL } from 'src/clipboard'
-	import { drawings, figmaDoc, get, options } from 'src/storage'
-	import { popToast } from '../Toasts/toast'
-	import { sendGcode } from '../gcode'
+	import { copyFigmaArtboard, loadFigmaURL } from 'src/ts/clipboard'
+	import { drawings, figmaDoc, get, options } from 'src/ts/storage'
+	import { info } from 'src/ts/toast'
+	import { queueDrawing } from 'src/ts/gcode'
 
 	let queue: () => void, marching: boolean
 	let svgData: string
 
-	const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
 	async function print() {
-		popToast('Preparing to plot your design...')
+		info('Preparing to plot your design...')
 
 		let data: any = get(options)
-		console.log('Getting store in print()', data)
 		data.svg = svgData
 
 		const res = await fetch('https://plotbot.art/api/cam', {
@@ -28,15 +26,7 @@
 		})
 		const gcode = await res.text()
 
-		console.log(gcode)
-		// window.location.href =
-		// 	'data:application/octet-stream,' + encodeURIComponent(gcode)
-
-		const lines = gcode.split('\n')
-		console.log(lines.length, 'lines')
-		sendGcode(lines)
-
-		// drawings.update((list) => [...list, svgData])
+		queueDrawing(gcode)
 	}
 </script>
 

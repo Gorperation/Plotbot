@@ -1,5 +1,6 @@
-import { type Writable, writable } from 'svelte/store'
-import type { Status } from './lib/Panel'
+import { writable } from 'svelte/store'
+import type { Writable } from 'svelte/store'
+import type { Status } from 'src/ts/utility'
 
 export function get<T>(store: Writable<T>) {
 	let val: T
@@ -14,6 +15,7 @@ type Drawing = {
 	status: Status
 	sizeKB: number
 	time: number
+	gcode: string
 }
 
 export const drawings: Writable<Drawing[]> = writable([])
@@ -31,9 +33,7 @@ export const options = writable({
 
 export const status = writable({
 	printing: false,
-	paused: false,
-	error: false as boolean | string,
+	error: null as string,
+	drawing: null as Drawing,
 	progress: 0,
-	fileName: '',
-	fileSize: 0,
 })

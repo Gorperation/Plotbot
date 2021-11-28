@@ -1,15 +1,8 @@
 <script lang="ts">
-	import { connect } from './bluetooth'
-
 	let size = 0.9
-
-	function click(e: MouseEvent) {
-		connect()
-	}
 </script>
 
 <svg
-	on:click={click}
 	width={197 * size}
 	height={172 * size}
 	viewBox="0 0 197 172"
@@ -36,6 +29,7 @@
 		right: 0em;
 		top: 1.1em;
 		transition: all 0.4s;
+		pointer-events: none;
 	}
 
 	@media screen and (max-width: 68em) {

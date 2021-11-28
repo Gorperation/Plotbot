@@ -1,33 +1,49 @@
 <script lang="ts">
-	import { renderTime } from 'src/utility'
+	import { status as statusStore } from 'src/ts/storage'
+	import { renderTime } from 'src/ts/utility'
 	import Button from '../Button.svelte'
-	import { Status } from './index.d'
+	import { Status } from 'src/ts/utility'
+	import { slide } from 'src/ts/animations'
 
-	export let sizeKB: number
-	export let status: Status
-	export let time: number
+	export let drawing
+
+	function click() {
+		drawing.status = Status.Drawing
+		statusStore.set({
+			printing: true,
+			error: null,
+			drawing,
+			progress: 0,
+		})
+	}
 </script>
 
-<div class="container">
+<div class="container" transition:slide={{ duration: 350 }}>
 	<div class="stats">
 		<div class="col">
 			<span>Status</span>
-			<span class="status {Status[status].toLowerCase()}"
-				>{Status[status]}</span
+			<span class="status {Status[drawing.status].toLowerCase()}"
+				>{Status[drawing.status]}</span
 			>
 		</div>
 		<div class="col">
 			<span>Size</span>
-			<span class="size">{sizeKB} kB</span>
+			<span class="size">{drawing.sizeKB} kB</span>
 		</div>
 		<div class="col">
 			<span>Time</span>
-			<span class="time">{renderTime(time)}</span>
+			<span class="time">{renderTime(drawing.time)}</span>
 		</div>
 	</div>
 	<div class="image">
-		{#if status != Status.Drawing}
-			<Button class="button" size="1.1">REDRAW</Button>
+		{#if drawing.status != Status.Drawing}
+			<span out:slide={{ axis: 'X' }}>
+				<Button class="button" size="1.1" {click}
+					>{drawing.status == Status.Ready
+						? 'DRAW'
+						: 'REDRAW'}</Button
+				>
+			</span>
 		{/if}
 	</div>
 </div>
@@ -71,8 +87,9 @@
 			display: inline-block;
 		}
 
-		.finished {
-			color: rgb(112, 202, 112);
+		.finished,
+		.ready {
+			color: hsl(120, 60%, 59%);
 		}
 		.drawing {
 			color: #ffc700;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Toast from './Toast.svelte'
-	import { toastStack } from './toast'
+	import { toastStack } from 'src/ts/toast'
 </script>
 
 <div class="toasts">

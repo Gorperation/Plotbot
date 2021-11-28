@@ -1,23 +1,14 @@
 <script lang="ts">
 	import { quadOut } from 'svelte/easing'
+	import { slide } from 'src/ts/animations'
 
-	import type { Toast } from './toast'
+	import type { Toast } from 'src/ts/toast'
 
 	export let toast: Toast
-	const { message, type, timeout } = toast
-
-	const fade = (node, { duration }) => ({
-		duration,
-		css: (t) => {
-			const eased = quadOut(t)
-			return `
-					transform: translateY(${1 - eased}em);
-					opacity: ${eased};`
-		},
-	})
+	const { message, type } = toast
 </script>
 
-<div class="toast {type}" transition:fade={{ duration: 200 }}>
+<div class="toast {type}" transition:slide={{ duration: 200 }}>
 	{message}
 </div>
 

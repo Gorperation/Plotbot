@@ -677,6 +677,11 @@ svelte-check@^2.1.0:
     svelte-preprocess "^4.0.0"
     typescript "*"
 
+svelte-drag@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/svelte-drag/-/svelte-drag-2.3.2.tgz#ccf4899dccb8d032493f0763998d740b207076d3"
+  integrity sha512-rhbbTlXPZ2R663S1S4iLARlQerBFequ65U6cf/cBQYq+ZU4G4NSluggxErCWGqWd9Pdqrdspd4c7Zx0dtqhs2Q==
+
 svelte-hmr@^0.14.7:
   version "0.14.7"
   resolved "https://registry.yarnpkg.com/svelte-hmr/-/svelte-hmr-0.14.7.tgz#7fa8261c7b225d9409f0a86f3b9ea5c3ca6f6607"

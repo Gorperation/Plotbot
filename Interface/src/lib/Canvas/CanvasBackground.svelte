@@ -1,7 +1,7 @@
 <script lang="ts">
 	// let canvas: HTMLDivElement;
 	import { sineIn } from 'svelte/easing'
-	const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+	import { delay } from 'src/ts/utility'
 
 	export let marching = false
 	let style = 'dashed'

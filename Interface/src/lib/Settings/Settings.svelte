@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { options as optionStore } from 'src/storage'
+	import { options as optionStore } from 'src/ts/storage'
 	import Field from '../Field.svelte'
 	import Checkbox from '../Checkbox.svelte'
 	import Dropdown from '../Dropdown.svelte'

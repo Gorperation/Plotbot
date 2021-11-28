@@ -1,5 +1,5 @@
 import App from './App.svelte'
-import './clipboard'
+import './ts/clipboard'
 import './global.scss'
 
 const app = new App({

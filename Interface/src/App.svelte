@@ -7,6 +7,10 @@
 	import Tag from './lib/Tag.svelte'
 	import Panel from './lib/Panel/Panel.svelte'
 	import Scroller from './lib/Scroller.svelte'
+	import Terminal from './lib/Terminal.svelte'
+	import { init } from './ts/websockets'
+
+	init()
 
 	// Must append mm to width and height attr of SVG
 </script>
@@ -18,6 +22,7 @@
 	<Settings />
 	<Tag />
 	<Toasts />
+	<Terminal />
 </main>
 <Scroller />
 <Doodads />

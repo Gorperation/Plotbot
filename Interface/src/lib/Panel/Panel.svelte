@@ -19,8 +19,8 @@
 	.container {
 		/* flex-wrap: wrap; */
 		flex: 1;
-		min-width: max(15em, 27vw);
-		max-width: 27em;
+		min-width: max(15em, 24vw);
+		max-width: 25em;
 		height: 100%;
 		margin-left: 2.5em;
 		position: relative;

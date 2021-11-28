@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { status } from 'src/storage'
+	import { status } from 'src/ts/storage'
 
 	let text = `PLOTBOT • DRAWING INNOVATION • ACCURACY • AI • PLOTBOT •
 			COMPUTATIONAL PICTOGRAPHY • ML • PRECISION • CNC • PLOTBOT • GCODE •

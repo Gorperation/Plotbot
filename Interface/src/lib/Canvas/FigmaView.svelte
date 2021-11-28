@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { figmaDoc } from 'src/storage'
-	import { popToast } from 'src/lib/Toasts/toast'
+	import { figmaDoc } from 'src/ts/storage'
+	import { error } from 'src/ts/toast'
 	import { onMount } from 'svelte'
 	import { LoadingManager } from 'three'
 
@@ -42,7 +42,7 @@
 		// console.log(svgContainer)
 		svg = svgContainer.querySelector('svg') as SVGSVGElement
 		if (!svg) {
-			popToast('No svg found in Figma Response', 'error')
+			error('No svg found in Figma Response')
 			return
 		}
 
